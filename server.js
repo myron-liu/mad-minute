@@ -120,6 +120,10 @@ app.get('/', (req, res) => {
   res.sendFile('index.html');
 })
 
+app.get('/favicon.ico' (req, res) => {
+  res.sendFile('favicon.ico')
+})
+
 app.get('/home', (req, res) => {
   res.sendFile('home.html')
 })
