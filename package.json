@@ -2,13 +2,24 @@
   "name": "mad-minute",
   "version": "1.0.0",
   "description": "A game where you try to solve as many multiplication problems you can in a minute.",
-  "main": "home.js",
+  "main": "server.js",
   "dependencies": {
-    "bootstrap": "^4.4.1"
+    "async": "^3.1.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.4.1",
+    "connect-redis": "^4.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mysql": "^2.17.1",
+    "mysql2": "^2.1.0",
+    "path": "^0.12.7",
+    "redis": "^2.8.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./start_server.sh prod"
   },
   "repository": {
     "type": "git",

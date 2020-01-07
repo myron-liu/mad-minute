@@ -20,6 +20,12 @@
 	margin-top: 4%;
 }
 
+#row {
+	position: relative;
+	padding-left: 10%;
+	left: 50%;
+}
+
 #navbar {
 	display: block;
 	padding-bottom: 2%;
