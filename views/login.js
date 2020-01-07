@@ -305,7 +305,7 @@ function renderOverallRankings(data, offset, size, ascending) {
 	var position, username, scores, problems
 	
 	for (var i = 0; i < data.length; i++) {
-		if (!ascending) {
+		if (ascending) {
 			position = offset + 1 + i
 		} else {
 			position = size - i
