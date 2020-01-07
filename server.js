@@ -25,20 +25,11 @@ const IN_PROD = NODE_ENV === 'prod'
 console.log(NODE_ENV)
 
 var redisConfig;
-if (IN_PROD) {
-  redisConfig = {
-    host: 'mad-minute.n1zsuf.ng.0001.usw1.cache.amazonaws.com',
-    port: 6379,
-    client: client, 
-    ttl: 260,
-  }
-} else {
-    redisConfig = {
+redisConfig = {
     host: 'localhost',
     port: 6379,
     client: client, 
     ttl: 260,
-  }
 }
 
 
