@@ -7,6 +7,7 @@ const mysql = require('mysql');
 const async = require('async');
 const path = require('path');
 const database = require('./database')
+const config = require('./config')
 
 const router = express.Router()
 const app = express();
@@ -22,14 +23,13 @@ const {
   SESS_SECRET = 'magic!',
 } = process.env
 const IN_PROD = NODE_ENV === 'prod'
-console.log(NODE_ENV)
 
 var redisConfig;
 redisConfig = {
-    host: 'localhost',
-    port: 6379,
+    host: config.redis.host,
+    port: config.redis.port,
     client: client, 
-    ttl: 260,
+    ttl: config.redis.ttl,
 }
 
 
