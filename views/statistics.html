@@ -16,6 +16,7 @@
 		<meta name="author" content="Myron Liu">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<script src="https://d3js.org/d3.v5.min.js"></script>
 	</head>
 
 
@@ -27,8 +28,8 @@
 	  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 	    <div class="navbar-nav mr-auto">
 	      <a class="nav-item nav-link" href="./home.html">Home<span class="sr-only">(current)</span></a>
-	      <a class="nav-item nav-link active" id="highscore" href="./highscores.html">High Scores <span class="sr-only">(current)</span></a>
-	      <a class="nav-item nav-link" href="./statistics.html">Statistics</a>
+	      <a class="nav-item nav-link" href="./highscores.html">High Scores</a>
+	      <a class="nav-item nav-link active" href="./statistics.html">Statistics <span class="sr-only">(current)</span> </a>
 	      <a class="nav-item nav-link" href="./contact.html">Contact</a>
 	    </div>
 	     <div class="navbar-nav ml-auto">
@@ -123,89 +124,104 @@
 	</div>
 
 
-	<body id='home'>
+	<body id='Statistics'>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 	    		<span class="navbar-toggler-icon"></span>
 	  		</button>
-	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-		  <ul class="nav nav-pills">
-			  <li class="nav-item">
-			    <a class="nav-link active score" onClick="docReady(onToggleViewMode);return false;" id='topscores' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Top Scores&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link score" onClick="docReady(onToggleViewMode);return false;" id='perfectscores'data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Perfect Scores&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link score" onClick="docReady(onToggleViewMode);return false;" id='allscores' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All Scores&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  	<li class="nav-item">
-			    <a class="nav-link score" onClick="docReady(onToggleViewMode);return false;" id='overallrankings' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Overall Rankings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-		 	</ul>
-		 	<div class="form-inline my-2 my-lg-0 ml-auto">
-			  	<div class="form-horizontal my-0 ml-auto form-group-lg">
-			    <input class="form-control -lg" id='searchbar' type="search" placeholder="Search Username" aria-label="Search" value=''>
-			</div>
-				<button class="btn btn-outline-success my-0 ml-lm-2" type="button" onClick='searchUser()'>Search</button>
-			</div>
-		</nav>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-	    		<span class="navbar-toggler-icon"></span>
-	  		</button>
-	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-		  <ul class="nav nav-tabs mr-auto">
-			  <li class="nav-item">
-			    <a class="nav-link active nav-rank date" onClick="docReady(onToggleViewMode);return false;" id='today'data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Today&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link nav-rank date" onClick="docReady(onToggleViewMode);return false;" id='lastweek' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;Last Week&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link nav-rank date"  onClick="docReady(onToggleViewMode);return false;" id='lastmonth' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;Last Month&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link nav-rank date" onClick="docReady(onToggleViewMode);return false;" id='lastyear' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;Last Year&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link nav-rank date" onClick="docReady(onToggleViewMode);return false;" id='alltime' data-toggle="pill" href="#">&nbsp;&nbsp;All Time&nbsp;&nbsp;&nbsp;</a>
-			  </li>
-		 	</ul>
-		 	<ul class="nav nav-tabs ml-auto">
-			  <li class="nav-item">
-			    <a class="nav-link active nav-rank asc" onClick="docReady(onToggleViewMode);return false;" id='ascending' data-toggle="pill" href="#">Ascending</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link nav-rank asc" onClick="docReady(onToggleViewMode);return false;" id='descending' data-toggle="pill" href="#">Descending</a>
-			  </li>
-			  <li class="nav-item">
-			    <div class="dropdown bg-primary">
- 					 <button class="btn btn-primary dropdown-toggle bg-primary" id='gameMode' type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Easy</button>
+		  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			  <ul class="nav nav-pills">
+				  <li class="nav-item">
+				    <a class="nav-link active statistics" onClick="docReady(renderStatistics);return false;" id='globalstatistics' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Global Statistics&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link disabled statistics" onClick="docReady(renderStatistics);return false;" id='yourstatistics' data-toggle="pill" href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your Statistics&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				  </li>
+				</ul>
+				<div> &nbsp;&nbsp;&nbsp;&nbsp;</div>
+				<div class="dropdown bg-secondary ml-auto">
+ 					 <button class="btn btn-secondary dropdown-toggle ml-auto" id='gameMode' type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Statistics</button>
   					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				    <button class="dropdown-item" onClick='toggleGameMode("Easy");docReady(onToggleViewMode);return false;'>Easy</button>
-				    <button class="dropdown-item" onClick='toggleGameMode("Medium");docReady(onToggleViewMode);return false;')>Medium</button>
-				    <button class="dropdown-item" onClick='toggleGameMode("Hard");docReady(onToggleViewMode);return false;'>Hard</button>
+  					<button class="dropdown-item" onClick='toggleGameMode("All Statistics");docReady(renderStatistics);return false;'>All</button>
+				    <button class="dropdown-item" onClick='toggleGameMode("Easy Statistics");docReady(renderStatistics);return false;'>Easy</button>
+				    <button class="dropdown-item" onClick='toggleGameMode("Medium Statistics");docReady(renderStatistics);return false;')>Medium</button>
+				    <button class="dropdown-item" onClick='toggleGameMode("Hard Statistics");docReady(renderStatistics);return false;'>Hard</button>
 				  </div>
 				</div>
-			  </li>
-
-		 </div>
+			</div>
 		</nav>
-		<table class="table table-bordered table-striped">
-  			<thead class='thead-light'>
-		    <tr id='headRow'>
-		    </tr>
-		  </thead>
-		  <tbody id='highscores-table'>
-		  </tbody>
-	</table>
-	
+
+		<div id='overall'>
+			<div id='overall-title'> Overall Statistics </div>
+			<ul id='overall-items' style='display: flex'>
+				<li class='overall-item'> 
+					<div class='overall-item-title'> Games Played </div> 
+					<div id='overall-games-played'> 0 </div>
+				</li>
+				<li class='overall-item'> 
+					<div class='overall-item-title'> Questions Answered </div> 
+					<div id='overall-answered'> 0 </div>
+				</li>
+				<li class='overall-item'> 
+					<div class='overall-item-title'> Questions Correct </div> 
+					<div id='overall-correct'> 0 </div>
+				</li>
+				<li class='overall-item'> 
+					<div class='overall-item-title'> Top Score </div>
+					<div id='overall-topscore'> 0 </div>
+				</li>
+				<li class='overall-item'> 
+					<div class='overall-item-title'> Average Score </div> 
+					<div id='overall-averagescore'> 0 </div>
+				</li>
+				<li class='overall-item'> 
+					<div class='overall-item-title'> Average Accuracy </div>
+					<div id='overall-averageaccuracy'> 0% </div>
+				</li>
+			</ul>
+		</div>
+		<div id='past10'>
+			<div id='bargraphContainer'>
+				<svg id='bargraph' style='width: 100%; height: 100%'> </svg>
+			</div>
+			<div id='past10summary'>
+				<ul id='past10stats' style='display: inline'>
+					<div id='past10title'> Summary </div>
+					<div id='past10topScore'>
+						Top Score: 0
+					</div>
+					<div id='past10topUser'>
+						Top User: anon
+					</div>
+					<div id='past10average'>
+						Average Score: 0
+					</div>
+					<div id='past10sd'>
+						Standard Deviation: 0
+					</div>
+					<div id='past10lowest'>
+						Lowest Score: 0
+					</div>
+					<div id='past10accuracy'>
+						Average Accuracy: 0%
+					</div>
+					<div id='past10time'>
+						Average Time Taken: 
+					</div>
+					<div id='past10mostCommon'>
+						Most Common Mistakes:
+						<ul id='commonMistakes'>
+		
+						</ul> 
+					</div>
+				</ul>
+			</div>
+		</div>
+		
 		<script src="./login.js"> </script>
+		<script src="./statistics.js"> </script>
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-		
 	</body>
 </html>

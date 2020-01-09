@@ -1,21 +1,24 @@
 const mysql = require('mysql2');
 const util = require('util');
-const config = require('./config')
+const configuration = require('./config')
 // Database handling
 
 function runDatabase(environment) {
   var pool
+  var config
   if (environment === 'dev') {
+    config = configuration['development']
     var pool = mysql.createPool({
       connectionLimit: 100,
-       host: config.database.host,
+      host: config.database.host,
       user: config.database.user,
       port: config.database.port,
       password: config.database.password,
       database: config.database.database, 
-      debug: true,
+      debug: false,
     })
   } else if  (environment === 'prod') {
+    config = configuration['production']
     var pool = mysql.createPool({
       connectionLimit: 100,
       host: config.database.host,
@@ -126,8 +129,7 @@ class Database {
     ( SELECT user_id, MAX(score) AS score FROM user_scores WHERE game_mode = '${gameMode}' GROUP BY user_id) AS b ON a.score = b.score 
     AND a.user_id = b.user_id GROUP BY a.user_id, a.score) AS d 
     ON c.user_id = d.user_id AND c.score = d.score AND c.num_problems = d.num_problems
-    ORDER BY c.score ${asc}, num_problems ASC`
-    console.log(sql)
+    ORDER BY c.score ${asc}, num_problems ASC;`
     const result = await this.pool.query(sql)
     return result[0]
   }
@@ -141,7 +143,7 @@ class Database {
     ( SELECT user_id, MAX(score) AS score FROM user_scores WHERE game_mode = '${gameMode}' AND timestamp > ${date} GROUP BY user_id) AS b ON a.score = b.score 
     AND a.user_id = b.user_id GROUP BY a.user_id, a.score) AS d 
     ON c.user_id = d.user_id AND c.score = d.score AND c.num_problems = d.num_problems
-    ORDER BY c.score ${asc}, num_problems ASC`
+    ORDER BY c.score ${asc}, num_problems ASC;`
     const result = await this.pool.query(sql)
     return result[0]
   }
@@ -165,7 +167,7 @@ class Database {
   async getAllScores(offset, limit, gameMode, ascending) {
     const asc = ascending ? 'ASC' : 'DESC'
     const sql = `SELECT score, num_problems, name, timestamp FROM user_scores WHERE game_mode = '${gameMode}' AND score > 0
-            ORDER BY score ${asc}, num_problems ASC`
+            ORDER BY score ${asc}, num_problems ASC;`
     const result = await this.pool.query(sql)
     return result[0]
   }
@@ -173,7 +175,7 @@ class Database {
     async getScores(offset, limit, gameMode, ascending, date) {
     const asc = ascending ? 'ASC' : 'DESC'
     const sql = `SELECT score, num_problems, name, timestamp FROM user_scores WHERE game_mode = '${gameMode}' AND timestamp > ${date} AND score > 0
-            ORDER BY score ${asc}, num_problems ASC`
+            ORDER BY score ${asc}, num_problems ASC;`
     const result = await this.pool.query(sql)
     return result[0]
   }
@@ -188,8 +190,78 @@ class Database {
 
   async getAccuracies(offset, limit, gameMode, ascending, date) {
     const asc = ascending ? 'ASC' : 'DESC'
-      const sql = `SELECT MAX(score) AS topscore, ROUND(AVG(score / num_problems),2) * 100 AS accuracy, name FROM user_scores 
+    const sql = `SELECT MAX(score) AS topscore, ROUND(AVG(score / num_problems),2) * 100 AS accuracy, name FROM user_scores 
             WHERE game_mode = '${gameMode}' AND num_problems > 0 AND timestamp > ${date} GROUP BY name ORDER BY topscore ${asc}, accuracy DESC;`
+    const result = await this.pool.query(sql)
+    return result[0]
+  }
+
+  async getOverallSummary(gameMode) {
+    var sql = `SELECT COUNT(game_number) AS played, SUM(num_problems) AS answered, SUM(score) AS correct, 
+                  MAX(score) AS top_score, ROUND(AVG(score), 1) AS average_score, ROUND(AVG(score / num_problems), 2) * 100 AS average_accuracy FROM user_scores
+                  WHERE num_problems > 0`
+    if (gameMode) {
+        sql +=  ` AND game_mode = '${gameMode}'`
+    }
+    sql += ';'
+
+    const result = await this.pool.query(sql)
+    return result[0]
+  }
+
+  async getLastScores(limit, gameMode) {
+    var sql;
+    if (gameMode) {
+      sql = `SELECT user_id, game_mode, game_number, score, num_problems, name FROM user_scores WHERE game_mode = '${gameMode}' AND num_problems > 0
+                  ORDER BY timestamp DESC LIMIT ${limit};`
+    } else {
+      sql = `SELECT user_id, game_mode, game_number, score, num_problems, name FROM user_scores WHERE num_problems > 0 ORDER BY timestamp DESC LIMIT ${limit};`
+    }
+    const result = await this.pool.query(sql)
+    return result[0]
+  }
+
+  async getLastStatistics(userId, gameNumber) {
+    var sql = `SELECT problem, solution, answer, time FROM user_statistics WHERE user_id = ${userId} AND game_number = ${gameNumber};`
+    const result = await this.pool.query(sql)
+    return result[0]
+  }
+
+  async getUserSummary(gameMode, userId) {
+    var sql = `SELECT COUNT(game_number) AS played, SUM(num_problems) AS answered, SUM(score) AS correct, 
+                  MAX(score) AS top_score, ROUND(AVG(score), 1) AS average_score, ROUND(AVG(score / num_problems), 2) * 100 AS average_accuracy 
+                  FROM user_scores WHERE user_id = ${userId} AND num_problems > 0 `
+    if (gameMode) {
+        sql +=  ` AND game_mode = '${gameMode}'`
+    }
+    sql += ';'
+    const result = await this.pool.query(sql)
+    return result[0]
+  }
+
+  async getUserLastScores(limit, gameMode, userId) {
+    var sql;
+    if (gameMode) {
+      sql = `SELECT user_id, game_mode, game_number, score, num_problems, name FROM user_scores WHERE num_problems > 0
+                  AND game_mode = '${gameMode}' AND user_id = ${userId} ORDER BY timestamp DESC LIMIT ${limit};`
+    } else {
+      sql = `SELECT user_id, game_mode, game_number, game_mode, score, num_problems, name FROM user_scores WHERE user_id = ${userId}
+                  AND num_problems > 0 ORDER BY timestamp DESC LIMIT ${limit};`
+    }
+    const result = await this.pool.query(sql)
+    return result[0]
+  }  
+
+  async getUserLastStatistics(limit, gameMode,  userId) {
+    var sql = `SELECT problem, solution, answer, time FROM user_statistics WHERE user_id = ${userId}` 
+    if (gameMode) {
+      sql += ` AND game_mode = '${gameMode}'`
+    }
+    sql += ` ORDER BY game_number DESC`
+    if (limit) {
+      sql += ` LIMIT ${limit}`
+    }
+    sql += ';'
     const result = await this.pool.query(sql)
     return result[0]
   }

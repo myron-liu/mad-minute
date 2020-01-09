@@ -172,7 +172,6 @@ var buttons = {
 		textX: myCanvas.width/2 + 3,
 		textY: myCanvas.height/2 + 10,
 		activate: () => {
-			onPressRetry
 			myCanvas.addEventListener('click', onPressRetry, false);
 		},
 		deactivate: () => {
@@ -208,6 +207,7 @@ var buttons = {
 		onPress: () => {
 			buttons.mainMenu.deactivate();
 			gameArea.reset()
+			buttons.start.activate()
 			startMenu(myCanvas);
 			gameArea.started = false;
 			gameArea.practice = false;
@@ -541,7 +541,7 @@ var timer = {
 
 function drawGame() {
 	var start = Date.now(), time = 0, diff;
-	var duration = 60.00;
+	var duration = 10.00;
 	function counter() {
 		timer.drawTime((Math.round(duration*100)/100).toFixed(2));
 		duration = duration - 0.01;
@@ -656,11 +656,22 @@ function runGame() {
 runGame();
 
 const scoreUrl = '/score'
-const statisticUrl = '/statistic'
 /** API calls for storing information **/
-function recordPerformance() {
-	let scorePostData = {score: gameArea.score, numProblems: gameArea.numProblems, gameMode: gameArea.mode}
-	fetch(scoreUrl, {
+async function recordPerformance() {
+	var solutions = []
+	for (var i = 0; i < gameArea.problems.length; i++) {
+		solutions.push(gameArea.solutions[gameArea.problems[i]])
+	}
+	let scorePostData = {
+		score: gameArea.score, 
+		numProblems: gameArea.numProblems, 
+		gameMode: gameArea.mode,
+		problems: gameArea.problems,
+		solutions: solutions,
+		answers: gameArea.answers,
+		times: gameArea.times,
+	}
+	let data = await fetch(scoreUrl, {
 		method: 'POST',
 		mode: 'cors',
 		cache: 'no-cache',
@@ -668,29 +679,6 @@ function recordPerformance() {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(scorePostData)
-	})
-
-	if (gameArea.problems.length  === 0) {
-		return;
-	}
-	var solutions = []
-	for (var i = 0; i < gameArea.problems.length; i++) {
-		solutions.push(gameArea.solutions[gameArea.problems[i]])
-	}
-	var statisticPostData = {
-		'problems': gameArea.problems,
-		'solutions': solutions,
-		'answers': gameArea.answers,
-		'times': gameArea.times,
-	}
-	fetch(statisticUrl, {
-		method: 'POST',
-		mode: 'cors',
-		cache: 'no-cache',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(statisticPostData)
 	})
 
 }

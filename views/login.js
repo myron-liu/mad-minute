@@ -68,9 +68,14 @@ async function logout() {
 			'Content-Type': 'application/json'
 		},
 	})
+	var statisticsPage = document.getElementById('yourstatistics')
 	let data = await response.json()
 	if (data.status == 1) {
 		toggleSignInOn()
+		if (statisticsPage) {
+			toggleStatisticsButton(false)
+			renderStatistics()
+		}
 	}
 }
 
@@ -84,12 +89,39 @@ async function fetchSession() {
 		},
 	})
 	let data = await response.json()
+	var statisticsPage = document.getElementById('yourstatistics')
 	if (data.status == 1) {
 		toggleSignInOff(data.username)
+		if (statisticsPage) {
+			toggleStatisticsButton(true)
+		}
 	} else {
 		toggleSignInOn()
+		if (statisticsPage) {
+			toggleStatisticsButton(false)
+		}
 	}
 
+}
+
+function toggleStatisticsButton(mode) {
+	var statisticsPage = document.getElementById('yourstatistics')
+	var globalstatistics = document.getElementById('globalstatistics')
+	if (mode) {
+		statisticsPage.classList.remove('disabled')
+	} else {
+		var arr = statisticsPage.className.split(" ")
+		if (arr.indexOf('disabled') === -1) {
+			statisticsPage.className += " " + 'disabled';
+		}
+		if (arr.indexOf('active') !== -1) {
+			statisticsPage.classList.remove('active')
+		}
+		arr = globalstatistics.className.split(" ")
+		if (arr.indexOf('active') === -1) {
+			globalstatistics.className += " " + 'active';
+		}
+	}	
 }
 
 function toggleSignInOn() {
@@ -150,7 +182,6 @@ const overallrankingsURL = '/overallrankings'
 function toggleGameMode(mode) {
 	var gameMode = document.getElementById('gameMode')
 	gameMode.innerHTML = mode
-
 }
 
 function dateModeToDateTime(mode) {
@@ -182,11 +213,13 @@ async function onToggleViewMode(switchMode) {
 	if (!highscore) {
 		return;
 	}
+	var dateBox = document.getElementsByClassName('active date')[0]
 	var scoreMode = document.getElementsByClassName('active score')[0].id
 	var dateMode = document.getElementsByClassName('active date')[0].id
 	var ascMode = document.getElementsByClassName('active asc')[0].id
 	var gameMode = document.getElementById('gameMode').innerHTML.toLowerCase()
 	var header;
+
 	removeRows()
 	removeHeader()
 	switch (scoreMode) {

@@ -7,7 +7,7 @@ const mysql = require('mysql');
 const async = require('async');
 const path = require('path');
 const database = require('./database')
-const config = require('./config')
+const configuration = require('./config')
 
 const router = express.Router()
 const app = express();
@@ -24,6 +24,12 @@ const {
 } = process.env
 const IN_PROD = NODE_ENV === 'prod'
 
+var config;
+if (IN_PROD) {
+  config = configuration['production']
+} else {
+  config = configuration['development']
+}
 var redisConfig;
 redisConfig = {
     host: config.redis.host,
@@ -209,37 +215,25 @@ app.post('/score', async (req, res) => {
   const username = req.session.username || 'anon';
   const userId = req.session.userId || 1;
   const anon = username == 'anon';
-  const { score, numProblems, gameMode } = req.body
+  const { score, numProblems, gameMode, problems, solutions, answers, times } = req.body
   var gameNumber;
-  if (req.session.gameNumber) {
-    gameNumber = req.session.gameNumber + 1
-  } else {
-    gameNumber = await db.getGameNumber(userId) 
-    gameNumber = gameNumber + 1
+  gameNumber = await db.getGameNumber(userId) 
+  gameNumber = gameNumber + 1
+  const scoreResult = await db.postScore(userId, username, gameNumber, anon, score, numProblems, gameMode)
+  if (problems.length !== 0) {
+    const statisticResult = await db.postStatistic(userId, gameNumber, anon, problems, solutions, answers, times)
   }
-  const result = await db.postScore(userId, username, gameNumber, anon, score, numProblems, gameMode)
 
-  req.session.gameNumber = gameNumber
   res.send({status: 1, msg: false})
 })
+
 
 app.get('/statistic', async (req, res) => {
   const { userId } = req.body;
   statistics = await db.getStatistic(userId)
   res.json({statistics: statistics})
-
 })
 
-app.post('/statistic', async (req, res) => {
-    // To be called after POST /score
-  const username = req.session.username || 'anon';
-  const userId = req.session.userId || 1;
-  const anon = username == 'anon';
-  const { problems, solutions, answers, times } = req.body;
-  var gameNumber = req.session.gameNumber || await db.getGameNumber(userId);
-  db.postStatistic(userId, gameNumber, anon, problems, solutions, answers, times)
-  res.send({status: 1, msg: false})
-})
 
 app.post('/topscores', async (req, res) => {
   var { offset, limit, gameMode, ascending, date } = req.body
@@ -288,9 +282,47 @@ app.post('/overallrankings', async (req, res) => {
   } else {
     data = await db.getAccuracies(offset, limit, gameMode, ascending, date)
   }
-  console.log(data)
   res.json({status: 1, data: data})
 
+})
+
+app.post('/overallstatistics', async (req, res) => {
+  var { gameMode, statsMode} = req.body
+  var data;
+  if (statsMode) {
+    data = await db.getUserSummary(gameMode, req.session.userId || 1)
+  } else {
+    data = await db.getOverallSummary(gameMode)
+  }
+  if (data[0].played && data[0].answered && data[0].correct && data[0].top_score && data[0].average_score && data[0].average_accuracy) {
+    res.send({status: 1, resp: data[0]})
+  } else {
+    res.send({status: 0, msg: 'Data not found'})
+  }
+})
+
+app.post('/lastscores', async (req, res) => {
+  var { limit, gameMode, statsMode } = req.body
+  var data;
+  if (statsMode) {
+    data = await db.getUserLastScores(limit, gameMode, req.session.userId || 1)
+  } else {
+    data = await db.getLastScores(limit, gameMode)
+  }
+  if (data) {
+    res.send({status: 1, resp: data})
+  } else {
+    res.send({status: 0, msg: 'Data not found'})
+  }
+})
+
+app.post('/laststatistics', async (req, res) => {
+  var { gameNumber, userId } = req.body
+  if (!userId) {
+    res.json({status: 0, msg: 'No such user exists'})
+  }
+  const data = await db.getLastStatistics(userId, gameNumber)
+  res.json({status: 1, resp: data})
 })
 
 

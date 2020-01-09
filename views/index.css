@@ -37,6 +37,14 @@
 	max-width: 100%;
 }
 
+.date {
+	color: #FFFFFF;
+}
+
+.asc {
+	color: #FFFFFF;
+}
+
 canvas {
 	background: #F1F1F1;
 	border: 1px solid black;
@@ -48,3 +56,188 @@ canvas {
 	display: block;
 	max-width: 100%;
 }
+
+#overall {
+	display: inline-block;
+	text-align: center;
+	float: center;
+	width: 100%;
+}
+
+#overall-title {
+	font-size: 3.5vw;
+	padding-top: 1%;
+	padding-bottom: 1%;
+	background: #e9ecea;
+}
+
+#overall-items {
+	list-style-type: none;
+	width: 100%;
+	margin: 0;
+	margin-block-start: 0;
+	margin-block-end: 0;
+	padding-inline-start: 0;
+}
+
+.overall-item {
+	font-size: 1.5vw;
+	width: 100%;
+}
+
+#past10 {
+	display: flex;
+	background: #e9ecea;
+	border-bottom-color: #000000;
+	border-bottom-width: 2vw;
+	border-bottom: double;
+}
+#bargraphContainer {
+  background: #e9ecea;
+  padding-left: 5%;
+  width: 80vw; 
+  height: 40vw;
+  vertical-align: top;
+  overflow: hidden;
+}
+
+#past10summary {
+	font-size: 1.5vw;
+}
+
+
+#past10title {
+	font-size: 3vw;
+	padding-bottom: 5%;
+}
+
+#bargraph {
+  display: inline-block;
+}
+.bar-numproblems {
+	fill: #D8000C;
+}
+.bar-score {
+	fill: #39DB80;
+}
+
+.bar-value {
+	font-size: 1.5vw;
+}
+
+.bar-xaxis {
+	font-size: 1.5vw;
+}
+
+.bar-yaxis {
+	font-size: 1.5vw;
+}
+
+.bargraph-ylabel {
+	font-size: 2.5vw;
+}
+
+.bargraph-xlabel {
+	font-size: 2.5vw;
+}
+
+.bargraph-title {
+	font-size: 3vw;
+}
+
+#review {
+	display: inline-block;
+	text-align: center;
+	float: center;
+	width: 100%;
+	background: #e9ecea;
+}
+
+@media all and (max-width: 1000px) {
+	.bar-xaxis {
+		font-size: 2vw;
+	}
+
+	.bar-yaxis {
+		font-size: 2vw;
+	}
+
+	.bar-value {
+		font-size: 2vw;
+	}
+
+	.bargraph-ylabel {
+		font-size: 3vw;
+	}
+
+	.bargraph-xlabel {
+		font-size: 3vw;
+	}
+
+	.bargraph-title {
+		font-size: 3.5vw;
+		fill: #000;
+	}
+	.overall-item {
+		font-size: 1.6vw;
+		width: 100%;
+	}
+}
+
+@media all and (max-width: 800px) {
+	.bar-xaxis {
+		font-size: 4vw;
+	}
+
+	.bar-yaxis {
+		font-size: 4vw;
+	}
+
+	.bar-value {
+		font-size: 4vw;
+	}
+
+	.bargraph-ylabel {
+		font-size: 5vw;
+	}
+
+	.bargraph-xlabel {
+		font-size: 5vw;
+	}
+
+	.bargraph-title {
+		font-size: 5.5vw;
+	}
+	.overall-item {
+		font-size: 1.8vw;
+		width: 100%;
+	}
+}
+
+@media all and (max-width: 600px) {
+	.bar-xaxis {
+		font-size: 6vw;
+	}
+
+	.bar-yaxis {
+		font-size: 6vw;
+	}
+
+	.bar-value {
+		font-size: 6vw;
+	}
+
+	.bargraph-ylabel {
+		font-size: 7vw;
+	}
+
+	.bargraph-xlabel {
+		font-size: 7vw;
+	}
+
+	.bargraph-title {
+		font-size: 7.5vw;
+	}
+}
+
+
