@@ -18,7 +18,7 @@ const ONE_DAY = 1000 * 60 * 60 * 24
 const {
   PORT = 3000,
   SESS_LIFETIME = ONE_DAY,
-  NODE_ENV = process.argv[2] || 'dev',
+  NODE_ENV = process.argv[2] || 'prod',
   SESS_NAME = 'sid',
   SESS_SECRET = 'magic!',
 } = process.env
@@ -41,7 +41,7 @@ redisConfig = {
 
 const ACTIONS = {
   signin: 'signin',
-  signup: 'signout',
+  signup: 'signup',
   logout: 'logout',
 }
 const db = database.runDatabase(NODE_ENV)
