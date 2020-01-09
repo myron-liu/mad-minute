@@ -541,7 +541,7 @@ var timer = {
 
 function drawGame() {
 	var start = Date.now(), time = 0, diff;
-	var duration = 10.00;
+	var duration = 60.00;
 	function counter() {
 		timer.drawTime((Math.round(duration*100)/100).toFixed(2));
 		duration = duration - 0.01;
